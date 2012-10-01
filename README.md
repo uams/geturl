@@ -14,7 +14,9 @@ It also tries to use `pbcopy` on a mac, `xsel` or `xclip` on linux to put the ur
 
 #### Installation
 
-    sudo curl https://raw.github.com/uams/geturl/master/geturl -o /usr/local/bin/geturl
+    sudo curl https://raw.github.com/uams/geturl/master/geturl -o /usr/local/bin/geturl;
     sudo chmod +x /usr/local/bin/geturl
+
+I'll submit it to `brew` and `apt-get` if enough people are interested.
 
 <img src="https://raw.github.com/uams/geturl/master/static/install.png">
