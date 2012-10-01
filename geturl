@@ -32,7 +32,7 @@ except CalledProcessError:
 if not APIKEY:
     email = ''
     while not email:
-        email = raw_input('Enter your email for a filepicker.io acccount: ')
+        email = raw_input('Enter your email to link or create your filepicker.io acccount: ')
 
     # pretty sure this isn't public. found it by looking at the jotform integration
     APIKEY = check_output(['curl', '--silent', "%(fpurl)s/getKey?email=%(email)s" % {'fpurl': FPAPIURL, 'email': email}])
@@ -50,23 +50,32 @@ if len(sys.argv) != 2:
 
 #######################
 # Upload the file
-output = check_output('curl -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
+print
+print "Uploading the file to Filepicker.io..."
+output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
         {"filename": sys.argv[1], "apikey": APIKEY, "fpurl": FPURL}, shell=True)
 data = json.loads(output)
 url = data['data'][0]['url']
+
+print
+print "A Public Share URL for: %s" % sys.argv[1]
 print url
+print
 
 #######################
 # Copy to the clipboard
 try:
     if sys.platform == 'darwin':
         check_output('echo "%s" | pbcopy' % (url), shell=True)
+        print "Also in your clipboard"
     elif sys.platform == 'linux2':
         try:
             check_output('echo "%s" | xclip -selection clipboard > /dev/null 2>&1' % (url), shell=True)
+            print "Also in your clipboard"
         except CalledProcessError:
             try:
                 check_output('echo "%s" | xsel -b -i > /dev/null 2>&1' % (url), shell=True)
+                print "Also in your clipboard"
             except CalledProcessError:
                 pass
 except Exception:
