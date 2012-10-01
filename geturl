@@ -45,7 +45,7 @@ if not APIKEY:
 #######################
 # Usage if no right number of args
 if len(sys.argv) != 2:
-    print "usage: filepicker <filename>"
+    print "usage: geturl <filename>"
     exit()
 
 #######################
