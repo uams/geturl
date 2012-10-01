@@ -1,13 +1,17 @@
-## geturl
-### A Public Link Generator
+## geturl  - provide path. get url.
+### A CLI tool to get a public link for any file
+
+Uses [filepicker.io](https://www.filepicker.io) to store the files. It's a cool uploading tool that I've been using on my website and this is a hack on top of it.
 
 #### Use Cases
 
 - You need a quick way to send a file to someone. Instead of attaching it to an email or starting up your FTP server, use this to get a public URL.
 
-- A quick alternative to `scp`, or flash drives for quickly exchanging files.
+- Another tool in your arsenal of `scp`, yousendit, and flash drives for quickly exchanging files.
 
 #### Usage
+
+You provide a path, it returns a URL
 
     geturl path/to/file
 
