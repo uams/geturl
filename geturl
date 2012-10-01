@@ -3,13 +3,22 @@
 from subprocess import check_output, CalledProcessError
 import json
 import sys
-import fileinput
+import os
+import ConfigParser
 
 #######################
 # Constants
-APIKEY = ""
 FPURL = "https://www.filepicker.io"
 FPAPIURL = "https://developers.filepicker.io"
+CONFIG_FILE = os.path.expanduser('~/.geturl')
+
+#######################
+# Loading Config
+APIKEY = ""
+config = ConfigParser.ConfigParser()
+config.read(CONFIG_FILE)
+if config.has_option('filepicker', 'apikey'):
+    APIKEY = config.get('filepicker', 'apikey')
 
 #######################
 # Make sure we have curl
@@ -28,17 +37,10 @@ if not APIKEY:
     # pretty sure this isn't public. found it by looking at the jotform integration
     APIKEY = check_output(['curl', '--silent', "%(fpurl)s/getKey?email=%(email)s" % {'fpurl': FPAPIURL, 'email': email}])
 
-    #######################
-    # Modify the file, if you can, so that it contains the apikey
-    try:
-        for line in fileinput.input(sys.argv[0], inplace=1):
-            line = line.rstrip()
-            if line == 'APIKEY = ""':
-                print 'APIKEY = "%s"' % (APIKEY)
-            else:
-                print line
-    except Exception:
-        pass
+    if not config.has_section('filepicker'):
+        config.add_section('filepicker')
+    config.set('filepicker', 'apikey', APIKEY)
+    config.write(open(CONFIG_FILE, 'w+'))
 
 #######################
 # Usage if no right number of args
