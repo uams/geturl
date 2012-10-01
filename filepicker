@@ -1,0 +1,49 @@
+#!/usr/bin/python
+
+from subprocess import check_output
+import json
+import sys
+import fileinput
+
+#######################
+# Constants
+APIKEY = ""
+FPURL = "https://www.filepicker.io"
+FPAPIURL = "https://developers.filepicker.io"
+
+#######################
+# Find or register for an Filepicker.io account
+if not APIKEY:
+    email = ''
+    while not email:
+        email = raw_input('Enter your email for a filepicker.io acccount: ')
+
+    # pretty sure this isn't public. found it by looking at the jotform integration
+    APIKEY = check_output(['curl', '--silent', "%(fpurl)s/getKey?email=%(email)s" % {'fpurl': FPAPIURL, 'email': email}])
+
+    #Modify the file so that it contains the apikey
+    for line in fileinput.input(sys.argv[0], inplace=1):
+        line = line.rstrip()
+        if line == 'APIKEY = ""':
+            print 'APIKEY = "%s"' % (APIKEY)
+        else:
+            print line
+
+#######################
+# Usage if no right number of args
+if len(sys.argv) != 2:
+    print "usage: filepicker <filename>"
+    exit()
+
+#######################
+# Upload the file
+output = check_output('curl -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
+        {"filename": sys.argv[1], "apikey": APIKEY, "fpurl": FPURL}, shell=True)
+data = json.loads(output)
+url = data['data'][0]['url']
+print url
+
+#######################
+# Copy to the clipboard if OSX
+if sys.platform == 'darwin':
+    check_output('echo "%s" | pbcopy' % (url), shell=True)
