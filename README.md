@@ -8,10 +8,13 @@ This tool allows you to get a share link to any file. It uses Filepicker.io as a
     >>> geturl path/to/file
     https://www.filepicker.io/api/file/RANDOMSTRING
 
-It also tries to use pbcopy on a mac, xsel or xclip on linux to put the url into your clipboard.
+It also tries to use `pbcopy` on a mac, `xsel` or `xclip` on linux to put the url into your clipboard.
 
+<img src="https://raw.github.com/uams/geturl/master/static/example.png">
 
 #### Installation
 
     sudo curl https://raw.github.com/uams/geturl/master/geturl -o /usr/local/bin/geturl
     sudo chmod +x /usr/local/bin/geturl
+
+<img src="https://raw.github.com/uams/geturl/master/static/install.png">
