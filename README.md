@@ -1,7 +1,11 @@
 ## geturl
-### A Share Link Generator. Command Line Tool
- 
-This tool allows you to get a share link to any file. It uses Filepicker.io as a storage backend. (They have a 5000 file free limit so it shouldn't be a problem)
+### A Public Link Generator
+
+#### Use Cases
+
+- You need a quick way to send a file to someone. Instead of attaching it to an email or starting up your FTP server, use this to get a public URL.
+
+- A quick alternative to `scp`, or flash drives for quickly exchanging files.
 
 #### Usage
 
@@ -23,3 +27,7 @@ Enable Clipboard Access (Only necessary on Linux)
 I'll submit it to `brew` and `apt-get` if enough people are interested.
 
 <img src="https://raw.github.com/uams/geturl/master/static/install.png">
+
+#### Notes
+
+It uses Filepicker.io as a storage backend. (They have a 5000 file free limit so it shouldn't be a problem)
