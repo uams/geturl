@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
-from subprocess import check_output, CalledProcessError
+from subprocess import CalledProcessError
+try:
+	from subprocess import check_output
+except ImportError:
+	from check_output import check_output
+
 import json
 import sys
 import os
