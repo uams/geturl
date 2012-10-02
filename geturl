@@ -25,7 +25,7 @@ if config.has_option('filepicker', 'apikey'):
 try:
     check_output('curl --help > /dev/null', shell=True)
 except CalledProcessError:
-    exit("`curl` is requrired. Please install it")
+    exit("`curl` is required. Please install it")
 
 #######################
 # Find or register for an Filepicker.io account
