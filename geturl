@@ -6,6 +6,7 @@ try:
 except ImportError:
 	from check_output import check_output
 
+import urllib
 import json
 import sys
 import os
@@ -64,18 +65,16 @@ urls = []
 print
 for file in files:
     print "Uploading %s to Filepicker.io..." % file
-    output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
-            {"filename": file, "apikey": APIKEY, "fpurl": FPURL}, shell=True)
+    output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(fileurl)s' %
+            {"filename": file, "apikey": APIKEY, "fpurl": FPURL, "fileurl": urllib.pathname2url(file)}, shell=True)
     data = json.loads(output)
     url = data['data'][0]['url']
     urls.append(url)
-
 print
 
 for file, url in zip(files, urls):
     print "A Public Share URL for: %s" % file
     print url
-
 print
 
 #######################
