@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from subprocess import CalledProcessError
 try:
@@ -10,6 +10,7 @@ import json
 import sys
 import os
 import ConfigParser
+import argparse
 
 #######################
 # Constants
@@ -48,41 +49,52 @@ if not APIKEY:
     config.write(open(CONFIG_FILE, 'w+'))
 
 #######################
-# Usage if no right number of args
-if len(sys.argv) != 2:
-    print "usage: geturl <filename>"
-    exit()
+# parse args and print usage
+parser = argparse.ArgumentParser(
+    prog='geturl',
+    description='upload a file or multiple files to filepicker.io and copy address to clipboard',
+)
+parser.add_argument('file', default=[], nargs='+', help='file or files to create a public link for')
+args = parser.parse_args()
+files = args.file
+urls = []
 
 #######################
-# Upload the file
+# Upload the file(s)
 print
-print "Uploading the file to Filepicker.io..."
-output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
-        {"filename": sys.argv[1], "apikey": APIKEY, "fpurl": FPURL}, shell=True)
-data = json.loads(output)
-url = data['data'][0]['url']
+for file in files:
+    print "Uploading %s to Filepicker.io..." % file
+    output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
+            {"filename": file, "apikey": APIKEY, "fpurl": FPURL}, shell=True)
+    data = json.loads(output)
+    url = data['data'][0]['url']
+    urls.append(url)
 
 print
-print "A Public Share URL for: %s" % sys.argv[1]
-print url
+
+for file, url in zip(files, urls):
+    print "A Public Share URL for: %s" % file
+    print url
+
 print
 
 #######################
 # Copy to the clipboard
-try:
-    if sys.platform == 'darwin':
-        check_output('echo "%s" | pbcopy' % (url), shell=True)
-        print "Also in your clipboard"
-    elif sys.platform == 'linux2':
-        try:
-            check_output('echo "%s" | xclip -selection clipboard > /dev/null 2>&1' % (url), shell=True)
+if len(files) == 1:
+    try:
+        if sys.platform == 'darwin':
+            check_output('echo "%s" | pbcopy' % (url), shell=True)
             print "Also in your clipboard"
-        except CalledProcessError:
+        elif sys.platform == 'linux2':
             try:
-                check_output('echo "%s" | xsel -b -i > /dev/null 2>&1' % (url), shell=True)
+                check_output('echo "%s" | xclip -selection clipboard > /dev/null 2>&1' % (url), shell=True)
                 print "Also in your clipboard"
             except CalledProcessError:
-                pass
-except Exception:
-    pass
-        
+                try:
+                    check_output('echo "%s" | xsel -b -i > /dev/null 2>&1' % (url), shell=True)
+                    print "Also in your clipboard"
+                except CalledProcessError:
+                    pass
+    except Exception:
+        pass
+            
