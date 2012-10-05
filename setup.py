@@ -9,6 +9,7 @@ setup(name='geturl',
     license="MIT",
     url='https://github.com/uams/geturl',
     scripts=['geturl'],
+    py_modules=['check_output'],
     classifiers = [
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
