@@ -6,6 +6,7 @@ try:
 except ImportError:
 	from check_output import check_output
 
+import urllib
 import json
 import sys
 import os
@@ -57,13 +58,15 @@ if len(sys.argv) != 2:
 # Upload the file
 print
 print "Uploading the file to Filepicker.io..."
-output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(filename)s' %
-        {"filename": sys.argv[1], "apikey": APIKEY, "fpurl": FPURL}, shell=True)
+filename = sys.argv[1]
+fileurl = urllib.pathname2url(filename)
+output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(fileurl)s' %
+        {"filename": filename, "apikey": APIKEY, "fpurl": FPURL, "fileurl": fileurl}, shell=True)
 data = json.loads(output)
 url = data['data'][0]['url']
 
 print
-print "A Public Share URL for: %s" % sys.argv[1]
+print "A Public Share URL for: %s" % filename
 print url
 print
 
