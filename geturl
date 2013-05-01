@@ -78,8 +78,10 @@ urls = []
 print
 for file in files:
     print "Uploading %s to Filepicker.io..." % file
+    
+    escapedname = '\\"%s\\"' % file.replace('"', '\\\\\\"')
     output = check_output('curl --progress-bar -F "fileUpload=@%(filename)s" -F "apikey=%(apikey)s" %(fpurl)s/api/path/storage/%(fileurl)s' %
-            {"filename": file, "apikey": APIKEY, "fpurl": FPURL, "fileurl": urllib.pathname2url(file)}, shell=True)
+            {"filename": escapedname, "apikey": APIKEY, "fpurl": FPURL, "fileurl": urllib.pathname2url(file)}, shell=True)
     try:
         data = json.loads(output)
         url = data['data'][0]['url']
